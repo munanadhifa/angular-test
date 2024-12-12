@@ -1,12 +1,33 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [HttpClientModule, RouterModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'angular-test';
+  users: any[] = [];
+
+  constructor(private http: HttpClient, private router: Router) {}
+
+  ngOnInit(): void {
+    this.fetchUsers();
+  }
+
+  fetchUsers(): void {
+    const apiUrl = 'https://jsonplaceholder.typicode.com/users';
+    this.http.get(apiUrl).subscribe((data: any) => {
+      this.users = data;
+    });
+  }
+
+  viewDetails(id: number): void {
+    this.router.navigate(['/user', id]);
+  }
 }
